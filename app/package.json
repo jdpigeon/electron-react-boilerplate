@@ -14,5 +14,9 @@
     "postinstall": "npm run electron-rebuild"
   },
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "enchannel-zmq-backend": "^6.0.11",
+    "kernelspecs": "^2.0.0",
+    "spawnteract": "^4.0.0"
+  }
 }

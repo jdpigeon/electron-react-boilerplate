@@ -23,6 +23,11 @@ const port = process.env.PORT || 1212;
 const publicPath = `http://localhost:${port}/dist`;
 const dll = path.resolve(process.cwd(), 'dll');
 const manifest = path.resolve(dll, 'renderer.json');
+const nodeModules = {
+  jmp: "commonjs jmp",
+  canvas: "commonjs canvas",
+  "canvas-prebuilt": "commonjs canvas-prebuilt"
+};
 
 /**
  * Warn if the DLL is not built
@@ -48,6 +53,8 @@ export default merge.smart(baseConfig, {
     publicPath: `http://localhost:${port}/dist/`,
     filename: 'renderer.dev.js'
   },
+
+  externals: nodeModules,
 
   module: {
     rules: [
