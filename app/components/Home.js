@@ -1,7 +1,9 @@
 // @flow
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { Grid, Button } from "semantic-ui-react";
 import styles from "./Home.css";
+import { initCortex } from "../utils/emotiv";
 
 type Props = {
   jupyterActions: Object
@@ -16,38 +18,31 @@ export default class Home extends Component<Props> {
         <div className={styles.container} data-tid="container">
           <h2>Home</h2>
           <Link to="/counter">to Counter</Link>
-          <button
-            className={styles.btn}
-            onClick={this.props.jupyterActions.launchKernel}
-            data-tclass="btn"
-          >
-            Launch Kernel
-          </button>
-          <button
-            className={styles.btn}
-            onClick={() => this.props.jupyterActions.requestKernelInfo()}
-            data-tclass="btn"
-          >
-            Request Kernel Info
-          </button>
-          <button
-            className={styles.btn}
-            onClick={() =>
-              this.props.jupyterActions.sendExecuteRequest("print(2+2)")
-            }
-            data-tclass="btn"
-          >
-            Print 2 + 2
-          </button>
-          <button
-            className={styles.btn}
-            onClick={() =>
-              this.props.jupyterActions.closeKernel()
-            }
-            data-tclass="btn"
-          >
-            Close Kernel
-          </button>
+          <Grid columns={2} divided relaxed>
+            <Grid.Column>
+              <Button onClick={this.props.jupyterActions.launchKernel}>
+                Launch Kernel
+              </Button>
+              <Button
+                onClick={() => this.props.jupyterActions.requestKernelInfo()}
+              >
+                Request Kernel Info
+              </Button>
+              <Button
+                onClick={() =>
+                  this.props.jupyterActions.sendExecuteRequest("print(2+2)")
+                }
+              >
+                Print 2+2
+              </Button>
+              <Button onClick={() => this.props.jupyterActions.closeKernel()}>
+                Close Kernel
+              </Button>
+            </Grid.Column>
+            <Grid.Column>
+              <Button onClick={() => initCortex()}>Start Emotiv Stream</Button>
+            </Grid.Column>
+          </Grid>
         </div>
       </div>
     );
