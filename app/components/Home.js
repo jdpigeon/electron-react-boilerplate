@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Grid, Button } from "semantic-ui-react";
 import styles from "./Home.css";
-import { initCortex } from "../utils/emotiv";
+import { createStream } from "../utils/emotiv";
 
 type Props = {
   jupyterActions: Object
@@ -40,7 +40,9 @@ export default class Home extends Component<Props> {
               </Button>
             </Grid.Column>
             <Grid.Column>
-              <Button onClick={() => initCortex()}>Start Emotiv Stream</Button>
+              <Button onClick={() => createStream()}>
+                Start Emotiv Stream
+              </Button>
             </Grid.Column>
           </Grid>
         </div>

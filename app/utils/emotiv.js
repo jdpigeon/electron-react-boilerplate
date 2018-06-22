@@ -2,11 +2,11 @@
  * Adapted from the Cortex example, this will return an RxJS observable of raw EEG data
  *
  */
-
-const Cortex = require("./lib/cortex");
-const { USERNAME, PASSWORD, CLIENT_ID, CLIENT_SECRET } = require("../../keys");
-const { from, fromEvent } = require("rxjs");
-const { mergeMap, map } = require("rxjs/operators");
+import { Observable } from "rxjs/Observable";
+import "rxjs/add/observable/from";
+import "rxjs/add/observable/fromEvent";
+import { mergeMap, map, tap } from "rxjs/operators";
+import { USERNAME, PASSWORD, CLIENT_ID, CLIENT_SECRET } from "../../keys";
 
 // TODO: Slim this down to just initing and returning Cortex client object for Redux
 function initCortex() {
@@ -35,7 +35,7 @@ function initCortex() {
 }
 
 function createRawEmotivObservable(client, auth, onEEG) {
-  return from(
+  return Observable.from(
     client.ready
       .then(() => client.init(auth))
       .then(() =>
@@ -44,29 +44,24 @@ function createRawEmotivObservable(client, auth, onEEG) {
           .subscribe({ streams: ["eeg"] })
       )
   ).pipe(
+    tap(() => console.log("authentication and created session")),
     mergeMap(subs => {
       if (!subs[0].eeg) throw new Error("failed to subscribe");
-      return fromEvent(client, "eeg").pipe(map(onEEG));
+      return Observable.fromEvent(client, "eeg").pipe(map(onEEG));
     })
   );
 }
 
-if (require.main === module) {
-  process.on("unhandledRejection", err => {
-    throw err;
-  });
+const createStream = () => {
+  const client = initCortex();
+  console.log("created new client", client);
 
-  const verbose = process.env.LOG_LEVEL || 1;
-  const options = { verbose };
-
-  const client = new Cortex(options);
   // these values need to be filled to run example
   const auth = {
     username: USERNAME,
     password: PASSWORD,
     client_id: CLIENT_ID,
-    client_secret: CLIENT_SECRET,
-    debit: 1
+    client_secret: CLIENT_SECRET
   };
 
   const onEEG = data => ({
@@ -76,7 +71,9 @@ if (require.main === module) {
 
   const rawObservable = createRawEmotivObservable(client, auth, onEEG);
 
-  rawObservable.subscribe(console.log);
-}
+  console.log("created Raw Observable");
 
-module.exports = { createRawEmotivObservable, initCortex };
+  rawObservable.subscribe(console.log);
+};
+
+module.exports = { createRawEmotivObservable, initCortex, createStream };
